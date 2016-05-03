@@ -3,29 +3,14 @@ open Language
 
 let variables = Hashtbl.create 100;;
 
-let rec sim_add = function
-   |Float e1,Float e2->e1+.e2
-   |Float e1,e2-> e1+.(sim_expr e2)
-   |e1, Float e2 -> (sim_expr e1)+.e2
-   |e1, e2 -> (sim_expr e1)+.(sim_expr e2)
+let rec sim_add (e1, e2) = (sim_expr e1)+.(sim_expr e2)
    
-and sim_sub = function
-   |Float e1,Float e2->e1-.e2
-   |Float e1,e2-> e1-.(sim_expr e2)
-   |e1, Float e2 -> (sim_expr e1)-.e2
-   |e1, e2 -> (sim_expr e1)-.(sim_expr e2)
+and sim_sub (e1, e2) = (sim_expr e1)-.(sim_expr e2)
 
-and sim_mul = function
-   |Float e1,Float e2->e1*.e2
-   |Float e1,e2-> e1*.(sim_expr e2)
-   |e1, Float e2 -> (sim_expr e1)*.e2
-   |e1, e2 -> (sim_expr e1)*.(sim_expr e2)
+and sim_mul (e1, e2) = (sim_expr e1)*.(sim_expr e2)
    
-and sim_div = function
-   |Float e1,Float e2-> if e2 = float 0 then failwith "ERROR" else e1/.e2
-   |Float e1,e2-> if (sim_expr e2) = float 0 then failwith "ERROR" else e1/.(sim_expr e2)
-   |e1, Float e2 -> if e2 = float 0 then failwith "ERROR" else (sim_expr e1)/.e2
-   |e1, e2 -> if (sim_expr e2) = float 0 then failwith "ERROR" else (sim_expr e1)/.(sim_expr e2)
+and sim_div (e1, e2) = 
+   if (sim_expr e2) = float 0 then failwith "ERROR" else (sim_expr e1)/.(sim_expr e2)
 
 and sim_expr = function
    |Var x -> Hashtbl.find variables x
