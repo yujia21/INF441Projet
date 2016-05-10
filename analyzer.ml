@@ -28,21 +28,26 @@ let parse_file f =
      exit 1
 
 let () =
-  if Array.length Sys.argv < 2 then
+  if Array.length Sys.argv < 2 then begin
     (* NO FILE NAME *)
     failwith "Please enter a file name."
+    end
 
-  else if Array.length Sys.argv = 2 then 
+  else if Array.length Sys.argv = 2 then begin
     (* SIMULATE *)
      let prog = parse_file Sys.argv.(1) in
      print_string ("Program:\n\n" ^ Language.string_of_prog prog ^ "\n");
-     Simulator.sim(prog)
+     print_string("\nx = ");
+     Simulator.sim(prog);
+     print_string("\n")
+     end
 
-  else if Array.length Sys.argv = 3 then
+  else if Array.length Sys.argv = 3 then begin
      (* WITH FLAGS *)
-     print_string ("Flag : ");
      let flag = Sys.argv.(1) in
      let prog = parse_file Sys.argv.(2) in     
+     print_string ("Program:\n\n" ^ Language.string_of_prog prog ^ "\n");
+     print_string ("\n\nFlag : ");
      match flag with
       |"--sign" -> 
          print_string ("sign\n");
@@ -54,3 +59,4 @@ let () =
          print_string ("set\n")
          (*Set.sim(prog)*)
       | x -> failwith " not recognized\n"
+      end
