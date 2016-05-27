@@ -92,14 +92,14 @@ let combine_err e1 e2 =
    (*only NO_ERROR, NO_ERROR gives NO_ERROR, only ERROR, ERROR gives ERROR, all else is MAYBE ERROR*)
 
 and combine_val x1 x2 = match (x1, x2) with
-   |("PZ", "P")
-   |("P","PZ") -> Hashtbl.replace variables "x" "PZ"
+   |("ZP", "P")
+   |("P","ZP") -> Hashtbl.replace variables "x" "ZP"
    |("NZ", "N")
    |("N","NZ") -> Hashtbl.replace variables "x" "NZ"
    |(x1, x2) -> 
       if (x1 = x2) then Hashtbl.replace variables "x" x1
       else Hashtbl.replace variables "x" "NZP"
-   (* all NZP, except when two the same, or PZ, P or NZ, N  *)
+   (* all NZP, except when two the same, or ZP, P or NZ, N  *)
 
 let rec combine_prog p1 p2 = (*run p1, check x and error, run p2, check x and error*)
    sign_prog p1;
