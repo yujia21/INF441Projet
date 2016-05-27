@@ -21,7 +21,7 @@ let rec print_set t = match t with
       if (t.low = t.high) then begin
          print_float(t.low);
          if (List.length(ts) = 0) then
-         print_string("} ")
+         print_string("")
          else begin
             print_string(", ");
             print_set ts
@@ -34,7 +34,7 @@ let rec print_set t = match t with
          print_float(t.high);
          print_string("]");
          if (List.length(ts) = 0) then
-         print_string("} ")
+         print_string("")
          else begin
             print_string(", ");
             print_set ts

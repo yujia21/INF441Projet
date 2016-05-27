@@ -184,6 +184,7 @@ let intv p =
    (*print t;*)(*Interval without extension*)
    print_string("{");
    print_set t;
+   print_string("}");   
    print_string("\n");
    print_string(Hashtbl.find error "error");
    print_string("\n")
