@@ -6,33 +6,33 @@ open Floatinterval
 let variables = Hashtbl.create 100;;
 let error = Hashtbl.create 1;;
 
-let rec int_add (e1, e2) = match (e1, e2) with
+let rec intv_add (e1, e2) = match (e1, e2) with
    |([], _)
    |(_, []) -> [] (*Empty set is for nondefined*)
    |(e1::[], e2::[]) ->
       [{low=(e1.low+.e2.low); high=(e1.high+.e2.high)}]
    |(e2::[],e1::es)
    |(e1::es,e2::[]) ->
-      combine (int_add ([e1],[e2])) (int_add (es,
+      combine (intv_add ([e1],[e2])) (intv_add (es,
       [e2]))
    |(e1, e2::es) ->  
-   combine (int_add (e1,[e2])) (int_add (e1, es))
+   combine (intv_add (e1,[e2])) (intv_add (e1, es))
    
          
-and int_sub (e1, e2) = match (e1, e2) with
+and intv_sub (e1, e2) = match (e1, e2) with
    |([], _)
    |(_, []) -> [] (*Empty set is for nondefined*)
    |(e1::[], e2::[]) ->
       [{low=(e1.low-.e2.high); high=(e1.high-.e2.low)}]
    |(e1::[],e2::es) ->
-   combine (int_sub ([e1],[e2])) (int_sub ([e1],es))
+   combine (intv_sub ([e1],[e2])) (intv_sub ([e1],es))
    |(e1::es,e2::[]) ->
-      combine (int_sub ([e1],[e2])) (int_sub (es,
+      combine (intv_sub ([e1],[e2])) (intv_sub (es,
       [e2]))
    |(e1, e2::es) ->  
-   combine (int_sub (e1,[e2])) (int_sub (e1, es))   
+   combine (intv_sub (e1,[e2])) (intv_sub (e1, es))   
    
-and int_mul (e1, e2) = match (e1, e2) with
+and intv_mul (e1, e2) = match (e1, e2) with
    |([], _)
    |(_, []) -> [] (*Empty set is for nondefined*)
    |(e1::[], e2::[]) ->
@@ -44,12 +44,12 @@ and int_mul (e1, e2) = match (e1, e2) with
       high=(max (max a1 a2) (max a3 a4))}]
    |(e2::[],e1::es)
    |(e1::es,e2::[]) ->
-      combine (int_mul ([e1],[e2])) (int_mul (es,
+      combine (intv_mul ([e1],[e2])) (intv_mul (es,
       [e2]))
    |(e1, e2::es) ->  
-   combine (int_mul (e1,[e2])) (int_mul (e1, es))
+   combine (intv_mul (e1,[e2])) (intv_mul (e1, es))
    
-and int_div (e1, e2) = match (e1, e2) with
+and intv_div (e1, e2) = match (e1, e2) with
    |([], _)
    |(_, []) -> [] (*Empty set is for nondefined*)
    |(e1::[], e2::[]) ->
@@ -120,25 +120,25 @@ and int_div (e1, e2) = match (e1, e2) with
       [{low=(min (min a1 a2) (min a3 a4));high= (max (max a1 a2) (max a3 a4))}]
    end
    |(e1::[],e2::es) ->
-   combine (int_div ([e1],[e2])) (int_div ([e1],es))
+   combine (intv_div ([e1],[e2])) (intv_div ([e1],es))
    |(e1::es,e2::[]) ->
-      combine (int_div ([e1],[e2])) (int_div (es,
+      combine (intv_div ([e1],[e2])) (intv_div (es,
       [e2]))
    |(e1, e2::es) ->  
-   combine (int_div (e1,[e2])) (int_div (e1, es))
+   combine (intv_div (e1,[e2])) (intv_div (e1, es))
       
-and int_expr = function 
+and intv_expr = function 
 (*Language.expr -> Floatinterval.interval list*)
    |Var x -> Hashtbl.find variables x
    |Float x -> [{low=x;high=x}]
    (*something wrong here*)
-   |Add (e1,e2) -> int_add (int_expr e1, int_expr e2)
-   |Sub (e1,e2) -> int_sub (int_expr e1, int_expr e2)
-   |Mul (e1,e2) -> int_mul (int_expr e1, int_expr e2)
-   |Div (e1,e2) -> int_div (int_expr e1, int_expr e2)
+   |Add (e1,e2) -> intv_add (intv_expr e1, intv_expr e2)
+   |Sub (e1,e2) -> intv_sub (intv_expr e1, intv_expr e2)
+   |Mul (e1,e2) -> intv_mul (intv_expr e1, intv_expr e2)
+   |Div (e1,e2) -> intv_div (intv_expr e1, intv_expr e2)
    |Rand(e1, e2) -> 
-      let a = int_expr e1 in
-      let b = int_expr e2 in
+      let a = intv_expr e1 in
+      let b = intv_expr e2 in
       [{low = min (List.hd(a)).low (List.hd(b)).low; 
       high=max (List.hd(a)).high (List.hd(b)).high}]
    (*assume rand only called on floats*)
@@ -151,10 +151,10 @@ let combine_err e1 e2 =
 ;;
 
 let rec combine_prog p1 p2 = (*run p1, check x and error, run p2, check x and error*)
-   int_prog p1;
+   intv_prog p1;
    let e1 = Hashtbl.find error "error" in
    let x1 = Hashtbl.find variables "x" in
-   int_prog p2;
+   intv_prog p2;
    let e2 = Hashtbl.find error "error" in
    let x2 = Hashtbl.find variables "x" in
    combine_err e1 e2;
@@ -162,24 +162,24 @@ let rec combine_prog p1 p2 = (*run p1, check x and error, run p2, check x and er
    (*distinguish between two if branches two
    options*)
   
-and int_prog = function
-   |Assign(v,e) -> Hashtbl.replace variables v (int_expr e);
-   |Seq(p1,p2) -> int_prog p1; int_prog p2;
+and intv_prog = function
+   |Assign(v,e) -> Hashtbl.replace variables v (intv_expr e);
+   |Seq(p1,p2) -> intv_prog p1; intv_prog p2;
    |If(e, p1, p2) -> 
-      let x = (int_expr e) in
+      let x = (intv_expr e) in
       (*definitely 0*)   
       let x1 = (List.hd(x)).low in
       let y1 = (List.hd(x)).high in      
-      if (x1=0.0 && y1 = 0.0) then int_prog p2 
+      if (x1=0.0 && y1 = 0.0) then intv_prog p2 
       (*definitely not 0*)      
-      else if (x1>0.0 || y1 < 0.0) then int_prog p1
+      else if (x1>0.0 || y1 < 0.0) then intv_prog p1
       (*could be 0*) 
       else combine_prog p1 p2
 ;;
 
-let int p = 
+let intv p = 
    Hashtbl.replace error "error" "NO ERROR";
-   int_prog(p);
+   intv_prog(p);
    let t = (Hashtbl.find variables "x") in
    (*print t;*)(*Interval without extension*)
    print_string("{");

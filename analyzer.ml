@@ -54,6 +54,6 @@ let () =
          Sign.sign(prog)
       |"--interval" -> 
          print_string ("interval\n");
-         Interval.int(prog)
+         Interval.intv(prog)
       | x -> failwith " not recognized\n"
       end
