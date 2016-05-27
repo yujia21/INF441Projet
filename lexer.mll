@@ -19,6 +19,9 @@ rule token = parse
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
+ (* | "while" { WHILE }
+  | "do" { DO }
+  | "done" { DONE }  *)  
   | '(' { LPAR }
   | '{' { LPAR }
   | ')' { RPAR }

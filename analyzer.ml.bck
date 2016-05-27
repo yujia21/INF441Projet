@@ -47,16 +47,13 @@ let () =
      let flag = Sys.argv.(1) in
      let prog = parse_file Sys.argv.(2) in     
      print_string ("Program:\n\n" ^ Language.string_of_prog prog ^ "\n");
-     print_string ("Flag : ");
+     print_string ("\n\nFlag : ");
      match flag with
       |"--sign" -> 
          print_string ("sign\n");
          Sign.sign(prog)
       |"--interval" -> 
-         print_string ("interval\n")
-         (*Interval.sim(prog)*)
-      |"--set" -> 
-         print_string ("set\n")
-         (*Set.sim(prog)*)
+         print_string ("interval\n");
+         Interval.int(prog)
       | x -> failwith " not recognized\n"
       end

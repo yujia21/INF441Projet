@@ -53,10 +53,7 @@ let () =
          print_string ("sign\n");
          Sign.sign(prog)
       |"--interval" -> 
-         print_string ("interval\n")
-         (*Interval.sim(prog)*)
-      |"--set" -> 
-         print_string ("set\n")
-         (*Set.sim(prog)*)
+         print_string ("interval\n");
+         Interval.int(prog)
       | x -> failwith " not recognized\n"
       end

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ocaml.views.outline.QuickOutline.dialogSettings">
+		<item value="true" key="ocaml.views.outline.QuickOutlineDIALOG_USE_PERSISTED_LOCATION"/>
+		<item value="137" key="ocaml.views.outline.QuickOutlineDIALOG_WIDTH"/>
+		<item value="282" key="ocaml.views.outline.QuickOutlineDIALOG_X_ORIGIN"/>
+		<item value="297" key="ocaml.views.outline.QuickOutlineDIALOG_HEIGHT"/>
+		<item value="177" key="ocaml.views.outline.QuickOutlineDIALOG_Y_ORIGIN"/>
+		<item value="true" key="ocaml.views.outline.QuickOutlineDIALOG_USE_PERSISTED_SIZE"/>
+	</section>
+</section>
