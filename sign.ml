@@ -4,10 +4,7 @@ open Language
 
 let variables = Hashtbl.create 100;;
 
-let rec sign_add (e1, e2) =
-   let s1 = sign_expr e1 in
-   let s2 = sign_expr e2 in
-   match (s1, s2) with
+let rec sign_add (s1, s2) = match (s1, s2) with
    |("B", _)
    |(_, "B") -> "B"
    |("Z", x)
@@ -18,10 +15,7 @@ let rec sign_add (e1, e2) =
    |("N","NZ")->"NZ"
    |(s1,s2)-> if (s1=s2) then s2 else "NZP"
          
-and sign_sub (e1, e2) = 
-   let s1 = sign_expr e1 in
-   let s2 = sign_expr e2 in
-   match (s1, s2) with
+and sign_sub (s1, s2) = match (s1, s2) with
    |("B", _)
    |(_, "B") -> "B"
    |(x, "Z") -> x
@@ -34,31 +28,21 @@ and sign_sub (e1, e2) =
       else if ((String.contains s1 'N') && (String.contains s2 'P')) then "NZ"
       else "NZP"
 
-and sign_mul (e1, e2) = 
-   let s1 = sign_expr e1 in
-   let s2 = sign_expr e2 in
-   match (s1, s2) with
+and sign_mul (s1, s2) = match (s1, s2) with
    |("B", _)
    |(_, "B") -> "B"
    |("P","N")
    |("N","P")->"N"
    |(s1,s2) ->
       if (s1=s2) then s1
-      else if ((String.contains (sign_expr e1) 'Z') || (String.contains (sign_expr e2)
-      'Z')) then "Z"
-      else if ((String.contains (sign_expr e1) 'P') && (String.contains (sign_expr e2)
-      'N')) then "NZ"
-      else if ((String.contains (sign_expr e1) 'N') && (String.contains (sign_expr e2)
-      'P')) then "NZ"
-      else if ((String.contains (sign_expr e1) 'P') && (String.contains (sign_expr e2)
-      'P')) then "ZP"
-      else if ((String.contains (sign_expr e1) 'N') && (String.contains (sign_expr e2)
-      'N')) then "ZP"
+      else if ((String.contains s1 'Z') || (String.contains s2 'Z')) then "Z"
+      else if ((String.contains s1 'P') && (String.contains s2 'N')) then "NZ"
+      else if ((String.contains s1 'N') && (String.contains s2 'P')) then "NZ"
+      else if ((String.contains s1 'P') && (String.contains s2 'P')) then "ZP"
+      else if ((String.contains s1 'N') && (String.contains s2 'N')) then "ZP"
       else "NZP"
       
-and sign_div (e1, e2) = 
-   let s1 = sign_expr e1 in
-   let s2 = sign_expr e2 in
+and sign_div (s1, s2) = 
    if (s2 = "Z") then begin
       Hashtbl.replace variables "error" "ERROR";
       "B"
@@ -88,10 +72,10 @@ and sign_expr = function
       if x>0.0 then "P"
       else if x = 0.0 then "Z"
       else "N"
-   |Add (e1,e2) -> sign_add (e1, e2)
-   |Sub (e1,e2) -> sign_sub (e1, e2)
-   |Mul (e1,e2) -> sign_mul (e1, e2)
-   |Div (e1,e2) -> sign_div (e1, e2)
+   |Add (e1,e2) -> sign_add (sign_expr e1, sign_expr e2)
+   |Sub (e1,e2) -> sign_sub (sign_expr e1, sign_expr e2)
+   |Mul (e1,e2) -> sign_mul (sign_expr e1, sign_expr e2)
+   |Div (e1,e2) -> sign_div (sign_expr e1, sign_expr e2)
    |Rand(e1, e2) -> 
       if ((sign_expr e2)=(sign_expr e1)) then (sign_expr e1)
       else if ((sign_expr e2)="P" && (sign_expr e1)="Z") then "ZP"
