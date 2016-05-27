@@ -1,0 +1,6 @@
+x = 0;
+n = 5;
+while n do
+  x = x+1;
+  n = n-1
+done

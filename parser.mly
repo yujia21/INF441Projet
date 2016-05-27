@@ -5,11 +5,13 @@
 %token LPAR RPAR EQ COMMA SEQ EOF
 %token ADD SUB MUL DIV RAND
 %token IF THEN ELSE
+%token WHILE DO DONE
 %token <float> FLOAT
 %token <string> STRING
 
 %right SEQ
 %nonassoc THEN ELSE
+%nonassoc DO DONE
 %right ADD SUB
 %right MUL DIV
 %nonassoc UMINUS
@@ -25,6 +27,7 @@ prog:
     | STRING EQ expr { Assign ($1, $3) }
     | prog SEQ prog { Seq ($1, $3) }
     | IF expr THEN prog ELSE prog { If ($2, $4, $6) }
+    | WHILE STRING DO prog DONE {While ($2, $4)}
     | LPAR prog RPAR { $2 }
 
 expr:

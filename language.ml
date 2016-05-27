@@ -11,7 +11,7 @@ type prog =
   | Assign of string * expr (** x = e *)
   | Seq of prog * prog (** p1 ; p2 *)
   | If of expr * prog * prog (** if e then p1 else p2 *)
-  (*| While of string * prog (** while e do p done *)*)
+  | While of string * prog (** while e do p done *)
 
 let rec string_of_expr = function
   | Var x -> x
@@ -26,4 +26,4 @@ let rec string_of_prog = function
   | Assign (x, e) -> x ^ " = " ^ string_of_expr e
   | Seq (p1, p2) -> string_of_prog p1 ^ ";\n" ^ string_of_prog p2
   | If (e, p1, p2) -> "if " ^ string_of_expr e ^ " then " ^ string_of_prog p1 ^ " else " ^ string_of_prog p2
-  (*| While(x, p1) -> "while" ^ x ^ " do " ^ string_of_prog p1 ^ " done "*)
+  | While(x, p1) -> "while " ^ x ^ " do \n" ^ string_of_prog p1 ^ " \ndone "

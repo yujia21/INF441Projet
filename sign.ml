@@ -121,6 +121,7 @@ and sign_prog = function
       else if ((sign_expr e) = "P" || (sign_expr e) = "N") then sign_prog p1
       (*could be 0*)
       else combine_prog p1 p2
+   |While(v,p) -> print_string ("Untreated case!\n");sign_prog p(*TO DO*)     
 ;;
 
 let sign p = 

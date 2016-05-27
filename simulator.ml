@@ -33,11 +33,11 @@ let rec sim_prog = function
    |Assign(v,e) -> Hashtbl.replace variables v (sim_expr e);
    |Seq(p1,p2) -> sim_prog p1; sim_prog p2;
    |If(e, p1, p2) -> if (sim_expr e = 0.0) then sim_prog p2 else sim_prog p1;
-   (*|While(v,p) -> if (Hashtbl.find variables v <> 0.0) then begin
+   |While(v,p) -> if (Hashtbl.find variables v <> 0.0) then begin
                   sim_prog p; 
                   sim_prog (While(v, p));
                   end
-                  else begin end*)
+                  else begin end
 ;;
 
 let sim p = 

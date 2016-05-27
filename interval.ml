@@ -175,6 +175,7 @@ and intv_prog = function
       else if (x1>0.0 || y1 < 0.0) then intv_prog p1
       (*could be 0*) 
       else combine_prog p1 p2
+   |While(v,p) -> print_string ("Untreated case!\n"); intv_prog p(*TO DO*)           
 ;;
 
 let intv p = 
